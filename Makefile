@@ -6,15 +6,15 @@
 #    By: thifranc <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2016/02/04 19:24:34 by thifranc          #+#    #+#              #
-#    Updated: 2017/08/29 13:45:07 by thifranc         ###   ########.fr        #
+#    Updated: 2017/09/03 18:13:06 by thifranc         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = coucou.out
 
-INC = all.h
+INC = includes/ft_malloc.h
 
-SRCS = nik
+SRCS = srcs/ft_malloc
 
 ifeq ($(HOSTTYPE),)
 	HOSTTYPE := $(shell uname -m)_$(shell uname -s)
@@ -41,7 +41,6 @@ fclean: clean
 	@echo "erasing $(NAME)"
 
 re: fclean all
-	@make fclean -C libft/
 	@echo "fclean + all"
 
 .PHONY: all clean fclean re

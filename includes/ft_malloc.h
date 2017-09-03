@@ -6,7 +6,7 @@
 /*   By: thifranc <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/29 13:48:23 by thifranc          #+#    #+#             */
-/*   Updated: 2017/08/30 18:02:00 by thifranc         ###   ########.fr       */
+/*   Updated: 2017/09/03 18:08:39 by thifranc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,19 +14,23 @@
 # define FT_MALLOC_H
 
 #include <sys/mman.h>
-#include <stdlib.h>
+#include <unistd.h>
+#include <stdio.h>
 
-#define FALSE 0
-#define TRUE 1
-
-#define BLOCKSIZE sizeof(t_block) //relatif au systeme normalement
-#define TINY 2 //relatif au systeme normalement
+#define BLOCKSIZE sizeof(t_block) 
+#define TINY 2048 //relatif au systeme normalement
 #define SMALL 10
+
+
+typedef enum		e_bool
+{
+	FALSE,
+	TRUE
+}					t_bool;
 
 typedef struct		s_block
 {
-	void			*content;
-	char			free;
+	t_bool			free;
 	size_t			size;
 	struct s_block	*next;
 	struct s_block	*prev;
