@@ -6,7 +6,7 @@
 /*   By: thifranc <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/29 17:33:26 by thifranc          #+#    #+#             */
-/*   Updated: 2017/09/04 17:54:31 by thifranc         ###   ########.fr       */
+/*   Updated: 2017/09/04 18:25:40 by thifranc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,27 +55,48 @@ void	*t_malloc(size_t size)
 		return t_malloc(size);
 }
 
-void	*malloc(size_t size)
+t_bool	get_new_area(int type)
 {
-	if (size == 0) {
-		return (NULL);
-	} else if (0 < size && size <= TINY) {
-		return t_malloc(size);
+	t_block	*new_memory;
+	int	tiny_area;
+
+	dprintf(1, "\n\nget new area called !!!!\n\n");
+	if (type == TINY) {
+		tiny_area = ((100 * (TINY + BLOCKSIZE) / getpagesize()) + 1) * getpagesize();
+		new_memory = (t_block *)mmap(NULL, tiny_area, PROT_READ | PROT_WRITE, MAP_ANON | MAP_PRIVATE, -1, 0);
+		new_memory->size = tiny_area - BLOCKSIZE;
+		new_memory->free = TRUE;
+		new_memory->next = g_mem.tiny->next;
+		new_memory->prev = g_mem.tiny;
+		g_mem.tiny->next->prev = new_memory;
+		g_mem.tiny->next = new_memory;
 	}
-	else return(NULL);
-	/* else if (size < TINY && size <= SMALL) {
-		return s_malloc(size);
-	} else
-		return l_malloc(size);
-	}*/
+	return TRUE;
 }
 
-void	free(void *ptr)
+void	init_lst(int type)
 {
-	if (ptr == NULL)
-		return ;
+	int	tiny_area;
+
+	if (type == TINY) {
+		tiny_area = ((100 * (TINY + BLOCKSIZE) / getpagesize()) + 1) * getpagesize();
+		g_mem.tiny = mmap(NULL, tiny_area, PROT_READ | PROT_WRITE, MAP_ANON | MAP_PRIVATE, -1, 0);
+		dprintf(1, "plage memoire de %p jusque %p\n", g_mem.tiny, g_mem.tiny + tiny_area);
+		g_mem.tiny->size = tiny_area - BLOCKSIZE;
+		g_mem.tiny->free = TRUE;
+		g_mem.tiny->next = g_mem.tiny;
+		g_mem.tiny->prev = g_mem.tiny;
+		/*
+	} else if (type == SMALL) {
+		mmap(NULL, 9999, PROT_READ | PROT_WRITE, MAP_ANON | MAP_PRIVATE, -1, 0);
+	} else {
+		mmap(NULL, 9999, PROT_READ | PROT_WRITE, MAP_ANON | MAP_PRIVATE, -1, 0);
+		*/
+	}
+
 }
 
+/*
 int main(){
 	char	*lol;
 	t_block	*node;
@@ -99,3 +120,4 @@ int main(){
 
 	return (0);
 }
+*/

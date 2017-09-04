@@ -6,7 +6,7 @@
 /*   By: thifranc <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/29 13:48:23 by thifranc          #+#    #+#             */
-/*   Updated: 2017/09/04 10:01:49 by thifranc         ###   ########.fr       */
+/*   Updated: 2017/09/04 18:27:11 by thifranc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,7 @@ struct	s_mem {
 extern struct s_mem g_mem;
 
 void	free(void *ptr);
+void	*t_malloc(size_t size);
 void	*malloc(size_t size);
 void	*realloc(void *ptr, size_t size);
 t_bool	get_new_area(int type);
