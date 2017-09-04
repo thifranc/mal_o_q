@@ -6,7 +6,7 @@
 /*   By: thifranc <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/29 13:48:23 by thifranc          #+#    #+#             */
-/*   Updated: 2017/09/03 18:08:39 by thifranc         ###   ########.fr       */
+/*   Updated: 2017/09/04 10:01:49 by thifranc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,9 +36,20 @@ typedef struct		s_block
 	struct s_block	*prev;
 }					t_block;
 
+struct	s_mem {
+	t_block *tiny;
+	t_block *small;
+	t_block *large;
+};
+
+extern struct s_mem g_mem;
 
 void	free(void *ptr);
 void	*malloc(size_t size);
 void	*realloc(void *ptr, size_t size);
+t_bool	get_new_area(int type);
+void	init_lst(int type);
+int		size_available(size_t size);
+void	*carve_block(t_block *cur, size_t size, int rest);
 
 #endif
