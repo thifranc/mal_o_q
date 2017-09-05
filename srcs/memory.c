@@ -6,29 +6,11 @@
 /*   By: thifranc <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/04 09:50:01 by thifranc          #+#    #+#             */
-/*   Updated: 2017/09/05 14:53:50 by thifranc         ###   ########.fr       */
+/*   Updated: 2017/09/05 16:50:24 by thifranc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/ft_malloc.h"
-
-void	*carve_block(t_block *cur, size_t size, int rest)
-{
-	t_block	*new;
-
-	cur->free = FALSE;
-	new = (void*)cur + BLOCKSIZE + size;
-	//dprintf(1, "new is at %p, so %p - %p = %ld\n", new, new, cur, (new - cur));
-	new->size = rest;
-	new->free = TRUE;
-	new->prev = cur;
-	new->next = cur->next;
-	cur->next->prev = new;
-	cur->next = new;
-	g_mem.tiny = g_mem.tiny->prev;
-	dprintf(1, "coucou last\n");
-	return (void *)cur + BLOCKSIZE;
-}
 
 void	*malloc(size_t size)
 {
