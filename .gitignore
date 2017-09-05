@@ -1,5 +1,6 @@
-libft
+libft*
 *.out
 push-n-squat
 .DS_Store
 *.swp
+test*

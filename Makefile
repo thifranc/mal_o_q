@@ -6,7 +6,7 @@
 #    By: thifranc <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2016/02/04 19:24:34 by thifranc          #+#    #+#              #
-#    Updated: 2017/09/04 18:34:43 by thifranc         ###   ########.fr        #
+#    Updated: 2017/09/05 09:30:34 by thifranc         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -25,7 +25,7 @@ SYMLINK	= libft_malloc.so
 SRCS:= $(addsuffix .c, $(SRCS))
 OBJ = $(SRCS:%.c=%.o)
 
-FLAGS = -Wall -Werror -Wextra -shared -I
+FLAGS = -Wall -Werror -Wextra -shared
 
 all: $(NAME)
 
