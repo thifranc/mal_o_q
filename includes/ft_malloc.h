@@ -6,7 +6,7 @@
 /*   By: thifranc <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/29 13:48:23 by thifranc          #+#    #+#             */
-/*   Updated: 2017/09/05 16:49:42 by thifranc         ###   ########.fr       */
+/*   Updated: 2017/09/05 17:01:14 by thifranc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@
 #include <stdio.h>
 
 #define BLOCKSIZE sizeof(t_block) 
-#define TINY 2048 //relatif au systeme normalement
+#define TINY 1024 //relatif au systeme normalement
 #define SMALL 10
 
 

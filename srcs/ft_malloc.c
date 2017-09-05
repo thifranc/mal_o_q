@@ -6,7 +6,7 @@
 /*   By: thifranc <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/29 17:33:26 by thifranc          #+#    #+#             */
-/*   Updated: 2017/09/05 16:55:39 by thifranc         ###   ########.fr       */
+/*   Updated: 2017/09/05 18:46:13 by thifranc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,23 +23,29 @@ t_bool		size_available(size_t size)
 	g_mem.tiny = g_mem.tiny->next;
 	//this is a test to see if it's the first
 	//malloc but basically only testing that head == g_mem.tiny would suffice
-	if (head == g_mem.tiny && g_mem.tiny->free && (size + BLOCKSIZE) < g_mem.tiny->size)
+	if (head == g_mem.tiny && g_mem.tiny->free
+		&&
+		((size + BLOCKSIZE) < g_mem.tiny->size
+		 || /*test if g_mem.tiny + size is already a t_block*/))
 	{
 		return TRUE;
 	}
 	while (g_mem.tiny != head)
 	{
-		//dprintf(1, "size == %zu || free == %u  || asked == (%lu)\n",
-		//g_mem.tiny->size, g_mem.tiny->free, size + BLOCKSIZE);
 		if (g_mem.tiny->free && (size + BLOCKSIZE) < g_mem.tiny->size)
 		{
-			//dprintf(1, "cur=%p &&&&&& free? %u\n", g_mem.tiny, g_mem.tiny->free);
+		//dprintf(1, "size == %zu || free == %u  || asked == (%lu)\n",
+		//g_mem.tiny->size, g_mem.tiny->free, size + BLOCKSIZE);
+
 			return TRUE;
 		}
 		g_mem.tiny = g_mem.tiny->next;
 	}
 		if (g_mem.tiny->free && (size + BLOCKSIZE) < g_mem.tiny->size)
 		{
+			dprintf(1, "oijoijoijoijoijoijoij\n");
+		dprintf(1, "size == %zu || free == %u  || asked == (%lu)\n",
+		g_mem.tiny->size, g_mem.tiny->free, size + BLOCKSIZE);
 			//dprintf(1, "cur=%p &&&&&& free? %u\n", g_mem.tiny, g_mem.tiny->free);
 			return TRUE;
 		}
@@ -114,6 +120,7 @@ void	init_lst(int type)
 
 	if (type == TINY) {
 		tiny_area = ((100 * (TINY + BLOCKSIZE) / getpagesize()) + 1) * getpagesize();
+		dprintf(1, "TOTAL PLAGE === %d\n", tiny_area);
 		g_mem.tiny = mmap(NULL, tiny_area, PROT_READ | PROT_WRITE, MAP_ANON | MAP_PRIVATE, -1, 0);
 		g_mem.tiny->size = tiny_area - BLOCKSIZE;
 		g_mem.tiny->free = TRUE;
@@ -133,7 +140,6 @@ void	*carve_block(t_block *cur, size_t size)
 {
 	t_block	*new;
 
-	cur->free = FALSE;
 	new = (void*)cur + BLOCKSIZE + size;
 	//dprintf(1, "new is at %p, so %p - %p = %ld\n", new, new, cur, (new - cur));
 	new->size = cur->size - (size + BLOCKSIZE);
@@ -142,6 +148,8 @@ void	*carve_block(t_block *cur, size_t size)
 	new->next = cur->next;
 	cur->next->prev = new;
 	cur->next = new;
+	cur->size = size;
+	cur->free = FALSE;
 	g_mem.tiny = g_mem.tiny->prev;
 	return (void *)cur + BLOCKSIZE;
 }

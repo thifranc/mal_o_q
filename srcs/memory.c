@@ -6,7 +6,7 @@
 /*   By: thifranc <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/04 09:50:01 by thifranc          #+#    #+#             */
-/*   Updated: 2017/09/05 16:50:24 by thifranc         ###   ########.fr       */
+/*   Updated: 2017/09/05 18:17:52 by thifranc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,7 @@ t_block	*find_equality(void *ptr, t_block *head)
 
 void	real_free(t_block *node)
 {
+	//dprintf(1, "REAL FRE CALLED\n");
 	node->free = TRUE;
 	/*
 	if (node->prev->free == 1)
