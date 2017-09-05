@@ -6,7 +6,7 @@
 /*   By: thifranc <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/04 09:50:01 by thifranc          #+#    #+#             */
-/*   Updated: 2017/09/05 11:11:06 by thifranc         ###   ########.fr       */
+/*   Updated: 2017/09/05 14:53:50 by thifranc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,8 @@ void	*carve_block(t_block *cur, size_t size, int rest)
 	new->next = cur->next;
 	cur->next->prev = new;
 	cur->next = new;
+	g_mem.tiny = g_mem.tiny->prev;
+	dprintf(1, "coucou last\n");
 	return (void *)cur + BLOCKSIZE;
 }
 
@@ -47,20 +49,18 @@ t_block	*find_equality(void *ptr, t_block *head)
 {
 	t_block	*stop;
 
-	dprintf(1, "ptr == %p -- node== %p\n", ptr, (void*)head + BLOCKSIZE);
+	//dprintf(1, "ptr == %p -- node== %p\n", ptr, (void*)head + BLOCKSIZE);
 	stop = head->prev;
 	while (head != stop)
 	{
 		if ((void*)head + BLOCKSIZE == ptr)
 		{
-			dprintf(1, "coucou\n");
 			return head;
 		}
 		head = head->next;
 	}
 	if ((void*)head + BLOCKSIZE == ptr)
 	{
-		dprintf(1, "coucou\n");
 		return head;
 	}
 	else
@@ -69,7 +69,8 @@ t_block	*find_equality(void *ptr, t_block *head)
 
 void	real_free(t_block *node)
 {
-	node->free = 1;
+	node->free = TRUE;
+	/*
 	if (node->prev->free == 1)
 	{
 		node->prev->next = node->next;
@@ -78,12 +79,12 @@ void	real_free(t_block *node)
 	} else if (node->next->free == 1) {
 		real_free(node->next);
 	}
+	*/
 }
 
 void	free(void *ptr)
 {
 	t_block	*node;
-	//dprintf(1, "ptr == %p -- node== %p\n", ptr, (void*)g_mem.tiny + BLOCKSIZE);
 
 	if (ptr == NULL)
 		return ;
@@ -94,7 +95,6 @@ void	free(void *ptr)
 			   */
 			)
 	{
-		dprintf(1, "real free called \n");
 		real_free(node);
 	}
 	/*
