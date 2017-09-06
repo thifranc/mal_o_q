@@ -6,7 +6,7 @@
 /*   By: thifranc <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/04 09:50:01 by thifranc          #+#    #+#             */
-/*   Updated: 2017/09/06 13:20:52 by thifranc         ###   ########.fr       */
+/*   Updated: 2017/09/06 14:11:17 by thifranc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,15 +14,21 @@
 
 void	*malloc(size_t size)
 {
-	if (size == 0) {
+	if (size == 0)
+	{
 		return (NULL);
-	} else if (0 < size && size <= TINY) {
-		return t_malloc(size);
 	}
-	else if (TINY < size && size <= SMALL) {
-		return s_malloc(size);
-	} else {
-		return l_malloc(size);
+	else if (0 < size && size <= TINY)
+	{
+		return (t_malloc(size));
+	}
+	else if (TINY < size && size <= SMALL)
+	{
+		return (s_malloc(size));
+	}
+	else
+	{
+		return (l_malloc(size));
 	}
 }
 
@@ -31,22 +37,22 @@ t_block	*find_equality(void *ptr, t_block *head)
 	t_block	*stop;
 
 	if (head == NULL || ptr == NULL)
-		return NULL;
+		return (NULL);
 	stop = head->prev;
 	while (head != stop)
 	{
 		if ((void*)head + BLOCKSIZE == ptr)
 		{
-			return head;
+			return (head);
 		}
 		head = head->next;
 	}
 	if ((void*)head + BLOCKSIZE == ptr)
 	{
-		return head;
+		return (head);
 	}
 	else
-		return NULL;
+		return (NULL);
 }
 
 void	real_free(t_block *node)
@@ -70,10 +76,8 @@ void	free(void *ptr)
 
 	if (ptr == NULL)
 		return ;
-	else if (
-			(node = find_equality(ptr, g_mem.tiny)) != NULL
-			|| 	(node = find_equality(ptr, g_mem.small)) != NULL
-			)
+	else if ((node = find_equality(ptr, g_mem.tiny)) != NULL
+			|| (node = find_equality(ptr, g_mem.small)) != NULL)
 	{
 		real_free(node);
 	}
@@ -81,7 +85,7 @@ void	free(void *ptr)
 	{
 		node->free = TRUE;
 	}
-	else 
+	else
 		return ;
 }
 
@@ -108,17 +112,19 @@ void	*realloc(void *ptr, size_t size)
 
 	if (ptr == NULL)
 	{
-		return malloc(size);
-	} else {
+		return (malloc(size));
+	}
+	else
+	{
 		if (!find_equality(ptr, g_mem.tiny)
 				&& !find_equality(ptr, g_mem.small)
 				&& !find_equality(ptr, g_mem.large))
-			return NULL;
+			return (NULL);
 		if (size == 0)
 			size = 1;
 		memory = malloc(size);
 		ft_memcpy(memory, ptr, size);
 		free(ptr);
-		return memory;
+		return (memory);
 	}
 }
