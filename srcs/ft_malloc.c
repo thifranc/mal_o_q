@@ -6,7 +6,7 @@
 /*   By: thifranc <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/29 17:33:26 by thifranc          #+#    #+#             */
-/*   Updated: 2017/09/06 13:21:43 by thifranc         ###   ########.fr       */
+/*   Updated: 2017/09/06 13:32:34 by thifranc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,9 @@ void	*l_malloc(size_t size)
 	area = (((size  + BLOCKSIZE) / getpagesize()) + 1) * getpagesize();
 	if (!g_mem.large)
 	{
-		g_mem.large = (t_block *)mmap(NULL, area, PROT_READ | PROT_WRITE, MAP_ANON | MAP_PRIVATE, -1, 0);
+		if ((g_mem.large = (t_block *)mmap(NULL,
+			area, PROT_READ | PROT_WRITE, MAP_ANON | MAP_PRIVATE, -1, 0)) == NULL)
+			return NULL;
 		g_mem.large->size = area - BLOCKSIZE;
 		g_mem.large->free = FALSE;
 		g_mem.large->next = g_mem.large;
@@ -78,7 +80,9 @@ void	*l_malloc(size_t size)
 	{
 		return g_mem.large + BLOCKSIZE;
 	} else {
-		new_memory = (t_block *)mmap(NULL, area, PROT_READ | PROT_WRITE, MAP_ANON | MAP_PRIVATE, -1, 0);
+		if (!(new_memory = (t_block *)mmap(NULL,
+			area, PROT_READ | PROT_WRITE, MAP_ANON | MAP_PRIVATE, -1, 0)))
+				return NULL;
 		new_memory->size = area - BLOCKSIZE;
 		new_memory->free = FALSE;
 		new_memory->next = g_mem.large->next;
@@ -151,7 +155,8 @@ t_bool	get_new_area(int type)
 	int	area;
 
 	area = ((100 * (TINY + BLOCKSIZE) / getpagesize()) + 1) * getpagesize();
-	new_memory = (t_block *)mmap(NULL, area, PROT_READ | PROT_WRITE, MAP_ANON | MAP_PRIVATE, -1, 0);
+	if (!(new_memory = (t_block *)mmap(NULL,
+		area, PROT_READ | PROT_WRITE, MAP_ANON | MAP_PRIVATE, -1, 0)))
 	new_memory->size = area - BLOCKSIZE;
 	new_memory->free = TRUE;
 	if (type == TINY) {
@@ -176,14 +181,16 @@ void	init_lst(int type)
 	area = ((100 * (type + BLOCKSIZE) / getpagesize()) + 1) * getpagesize();
 	if (type == TINY) {
 		dprintf(1, "TOTAL PLAGE === %d\n", area);
-		g_mem.tiny = mmap(NULL, area, PROT_READ | PROT_WRITE, MAP_ANON | MAP_PRIVATE, -1, 0);
+		if (!(g_mem.tiny = mmap(NULL,
+			area, PROT_READ | PROT_WRITE, MAP_ANON | MAP_PRIVATE, -1, 0)))
 		g_mem.tiny->size = area - BLOCKSIZE;
 		g_mem.tiny->free = TRUE;
 		g_mem.tiny->next = g_mem.tiny;
 		g_mem.tiny->prev = g_mem.tiny;
 	} else if (type == SMALL) {
 		dprintf(1, "TOTAL PLAGE === %d\n", area);
-		g_mem.small = mmap(NULL, area, PROT_READ | PROT_WRITE, MAP_ANON | MAP_PRIVATE, -1, 0);
+		if (!(g_mem.small = mmap(NULL,
+			area, PROT_READ | PROT_WRITE, MAP_ANON | MAP_PRIVATE, -1, 0)))
 		g_mem.small->size = area - BLOCKSIZE;
 		g_mem.small->free = TRUE;
 		g_mem.small->next = g_mem.small;
