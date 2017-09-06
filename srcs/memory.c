@@ -6,7 +6,7 @@
 /*   By: thifranc <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/04 09:50:01 by thifranc          #+#    #+#             */
-/*   Updated: 2017/09/06 15:45:38 by thifranc         ###   ########.fr       */
+/*   Updated: 2017/09/06 16:36:56 by thifranc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -145,12 +145,14 @@ unsigned long long	print_memory(t_block *head, int type)
 		dprintf(1, "SMALL : %p\n", g_mem.small);
 	else if (type == LARGE)
 		dprintf(1, "LARGE : %p\n", g_mem.large);
+	if (!head)
+		return 0;
 	node = head;
 	total = 0;
 	head = head->prev;
 	while (node != head)
 	{
-		dprintf(1, "%p - %p : %llu octets\n", node + BLOCKSIZE, node->next, node->next - (node + BLOCKSIZE));
+		dprintf(1, "%p - %p : %ld octets\n", node + BLOCKSIZE, node->next, node->next - (node + BLOCKSIZE));
 		total += node->next - (node + BLOCKSIZE);
 		node = node->next;
 	}
@@ -162,7 +164,10 @@ void	first_in_head(t_block **list)
 	t_block	*node;
 	t_block	*head;
 
+	if (!*list)
+		return ;
 	head = *list;
+	dprintf(1, "lol1\n");
 	node = (*list)->next;
 	while (node != *list)
 	{
@@ -177,9 +182,13 @@ void	show_alloc_mem()
 {
 	unsigned long long	total;
 
+	dprintf(1, "lol1\n");
 	first_in_head(&(g_mem.tiny));
+	dprintf(1, "lol2\n");
 	first_in_head(&(g_mem.small));
+	dprintf(1, "lol3\n");
 	first_in_head(&(g_mem.large));
+	dprintf(1, "lol4\n");
 
 	total = print_memory(g_mem.tiny, TINY) + print_memory(g_mem.small, SMALL) + print_memory(g_mem.large, LARGE);
 	dprintf(1, "Total : %llu octets\n", total);

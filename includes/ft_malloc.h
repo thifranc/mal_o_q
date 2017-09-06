@@ -6,7 +6,7 @@
 /*   By: thifranc <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/29 13:48:23 by thifranc          #+#    #+#             */
-/*   Updated: 2017/09/06 15:40:04 by thifranc         ###   ########.fr       */
+/*   Updated: 2017/09/06 15:59:09 by thifranc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,7 @@ struct	s_mem {
 
 extern struct s_mem g_mem;
 
+void	show_alloc_mem();
 void	*s_malloc(size_t size);
 void	*l_malloc(size_t size);
 void	free(void *ptr);
