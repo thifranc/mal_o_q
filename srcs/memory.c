@@ -6,7 +6,7 @@
 /*   By: thifranc <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/04 09:50:01 by thifranc          #+#    #+#             */
-/*   Updated: 2017/09/05 18:17:52 by thifranc         ###   ########.fr       */
+/*   Updated: 2017/09/06 11:51:57 by thifranc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,19 +19,20 @@ void	*malloc(size_t size)
 	} else if (0 < size && size <= TINY) {
 		return t_malloc(size);
 	}
-	else return(NULL);
-	/* else if (size < TINY && size <= SMALL) {
+	else if (TINY < size && size <= SMALL) {
 		return s_malloc(size);
-	} else
+	} else {
 		return l_malloc(size);
-	}*/
+	}
 }
 
 t_block	*find_equality(void *ptr, t_block *head)
 {
 	t_block	*stop;
 
-	//dprintf(1, "ptr == %p -- node== %p\n", ptr, (void*)head + BLOCKSIZE);
+	dprintf(1, "free call\n");
+	if (head == NULL)
+		return NULL;
 	stop = head->prev;
 	while (head != stop)
 	{
@@ -51,7 +52,6 @@ t_block	*find_equality(void *ptr, t_block *head)
 
 void	real_free(t_block *node)
 {
-	//dprintf(1, "REAL FRE CALLED\n");
 	node->free = TRUE;
 	/*
 	if (node->prev->free == 1)
@@ -73,17 +73,16 @@ void	free(void *ptr)
 		return ;
 	else if (
 			(node = find_equality(ptr, g_mem.tiny)) != NULL
-			/*
-			   || 	(node = find_equality(ptr, g_mem.small)) != NULL
-			   */
+			|| 	(node = find_equality(ptr, g_mem.small)) != NULL
 			)
 	{
 		real_free(node);
 	}
-	/*
-	   else if ((node = find_equality(ptr, g_mem.large)))
-	   return ;
-	   */
+	else if ((node = find_equality(ptr, g_mem.large)))
+	{
+		dprintf(1, "large is freed\n");
+		node->free = TRUE;
+	}
 	else 
 		return ;
 }

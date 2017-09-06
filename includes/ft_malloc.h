@@ -6,7 +6,7 @@
 /*   By: thifranc <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/29 13:48:23 by thifranc          #+#    #+#             */
-/*   Updated: 2017/09/05 17:01:14 by thifranc         ###   ########.fr       */
+/*   Updated: 2017/09/06 11:27:36 by thifranc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,8 +18,8 @@
 #include <stdio.h>
 
 #define BLOCKSIZE sizeof(t_block) 
-#define TINY 1024 //relatif au systeme normalement
-#define SMALL 10
+#define TINY 150 //relatif au systeme normalement
+#define SMALL 1000
 
 
 typedef enum		e_bool
@@ -44,13 +44,15 @@ struct	s_mem {
 
 extern struct s_mem g_mem;
 
+void	*s_malloc(size_t size);
+void	*l_malloc(size_t size);
 void	free(void *ptr);
 void	*t_malloc(size_t size);
 void	*malloc(size_t size);
 void	*realloc(void *ptr, size_t size);
 t_bool	get_new_area(int type);
 void	init_lst(int type);
-t_bool	size_available(size_t size);
+t_bool	size_available(size_t size, t_block **src);
 void	*carve_block(t_block *cur, size_t size);
 
 #endif
