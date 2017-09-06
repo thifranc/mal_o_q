@@ -6,7 +6,7 @@
 /*   By: thifranc <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/04 09:50:01 by thifranc          #+#    #+#             */
-/*   Updated: 2017/09/06 16:36:56 by thifranc         ###   ########.fr       */
+/*   Updated: 2017/09/06 17:09:11 by thifranc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -152,8 +152,9 @@ unsigned long long	print_memory(t_block *head, int type)
 	head = head->prev;
 	while (node != head)
 	{
-		dprintf(1, "%p - %p : %ld octets\n", node + BLOCKSIZE, node->next, node->next - (node + BLOCKSIZE));
-		total += node->next - (node + BLOCKSIZE);
+		dprintf(1, "%p - %p : %ld octets\n", (void*)node + BLOCKSIZE, node->next,
+				(void*)node->next - ((void*)node + BLOCKSIZE));
+		total += (void*)node->next - ((void*)node + BLOCKSIZE);
 		node = node->next;
 	}
 	return total;
