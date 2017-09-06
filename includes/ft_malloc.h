@@ -6,7 +6,7 @@
 /*   By: thifranc <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/29 13:48:23 by thifranc          #+#    #+#             */
-/*   Updated: 2017/09/06 11:27:36 by thifranc         ###   ########.fr       */
+/*   Updated: 2017/09/06 13:17:35 by thifranc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,10 +16,11 @@
 #include <sys/mman.h>
 #include <unistd.h>
 #include <stdio.h>
+#include <string.h>
 
 #define BLOCKSIZE sizeof(t_block) 
-#define TINY 150 //relatif au systeme normalement
-#define SMALL 1000
+#define TINY 1024 //relatif au systeme normalement
+#define SMALL 2000
 
 
 typedef enum		e_bool
@@ -54,5 +55,6 @@ t_bool	get_new_area(int type);
 void	init_lst(int type);
 t_bool	size_available(size_t size, t_block **src);
 void	*carve_block(t_block *cur, size_t size);
+void	*realloc(void *ptr, size_t size);
 
 #endif

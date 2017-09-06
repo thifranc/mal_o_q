@@ -6,7 +6,7 @@
 /*   By: thifranc <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/29 17:33:26 by thifranc          #+#    #+#             */
-/*   Updated: 2017/09/06 11:51:29 by thifranc         ###   ########.fr       */
+/*   Updated: 2017/09/06 12:39:46 by thifranc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,6 @@ t_bool		size_available(size_t size, t_block **src)
 	 * this is a test to see if it's the first
 	 * malloc but basically only testing that head == *src would suffice
 	 */
-	dprintf(1, "free == %u && size == %zu asked == %zu test size avail\n", head->free, head->size, size);
 	if (head == *src && (*src)->free && (*src)->size >= size)
 	{
 		return TRUE;
@@ -67,7 +66,6 @@ void	*l_malloc(size_t size)
 	int		area;
 
 	area = (((size  + BLOCKSIZE) / getpagesize()) + 1) * getpagesize();
-	dprintf(1, "area = %d called\n", area);
 	if (!g_mem.large)
 	{
 		g_mem.large = (t_block *)mmap(NULL, area, PROT_READ | PROT_WRITE, MAP_ANON | MAP_PRIVATE, -1, 0);
@@ -78,11 +76,10 @@ void	*l_malloc(size_t size)
 	}
 	if (size_available(size, &(g_mem.large)))
 	{
-		dprintf(1, "SIZE AVAILABLE\n");
 		return g_mem.large + BLOCKSIZE;
 	} else {
 		new_memory = (t_block *)mmap(NULL, area, PROT_READ | PROT_WRITE, MAP_ANON | MAP_PRIVATE, -1, 0);
-		new_memory->size = area = BLOCKSIZE;
+		new_memory->size = area - BLOCKSIZE;
 		new_memory->free = FALSE;
 		new_memory->next = g_mem.large->next;
 		new_memory->prev = g_mem.large;
