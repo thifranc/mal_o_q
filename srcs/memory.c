@@ -6,7 +6,7 @@
 /*   By: thifranc <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/04 09:50:01 by thifranc          #+#    #+#             */
-/*   Updated: 2017/09/06 13:16:18 by thifranc         ###   ########.fr       */
+/*   Updated: 2017/09/06 13:20:52 by thifranc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,7 +85,6 @@ void	free(void *ptr)
 		return ;
 }
 
-/*
 void	*ft_memcpy(void *dst, const void *src, size_t n)
 {
 	size_t		i;
@@ -102,7 +101,6 @@ void	*ft_memcpy(void *dst, const void *src, size_t n)
 	}
 	return ((void*)dst);
 }
-*/
 
 void	*realloc(void *ptr, size_t size)
 {
@@ -119,7 +117,7 @@ void	*realloc(void *ptr, size_t size)
 		if (size == 0)
 			size = 1;
 		memory = malloc(size);
-		memcpy(memory, ptr, size);
+		ft_memcpy(memory, ptr, size);
 		free(ptr);
 		return memory;
 	}

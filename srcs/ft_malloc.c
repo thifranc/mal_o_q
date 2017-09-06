@@ -6,7 +6,7 @@
 /*   By: thifranc <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/29 17:33:26 by thifranc          #+#    #+#             */
-/*   Updated: 2017/09/06 12:39:46 by thifranc         ###   ########.fr       */
+/*   Updated: 2017/09/06 13:21:43 by thifranc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -209,21 +209,3 @@ void	*carve_block(t_block *cur, size_t size)
 	cur->free = FALSE;
 	return (void *)cur + BLOCKSIZE;
 }
-
-/*
-   int main(){
-   char	*lol;
-   t_block	*node;
-   int		i;
-
-   i = 0;
-   while (i < 1024)
-   {
-   lol = (char *)malloc(1024);
-   lol = "reussimalloc reussimalloc reussimalloc reussimalloc reussimalloc reussimalloc reussimalloc reussimalloc reussimalloc reussimalloc reussimalloc reussialloc reussi";
-   i++;
-   }
-
-   return (0);
-   }
-   */
