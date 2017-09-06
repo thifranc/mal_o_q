@@ -6,7 +6,7 @@
 /*   By: thifranc <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/04 09:50:01 by thifranc          #+#    #+#             */
-/*   Updated: 2017/09/06 14:11:17 by thifranc         ###   ########.fr       */
+/*   Updated: 2017/09/06 15:45:38 by thifranc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,20 +14,24 @@
 
 void	*malloc(size_t size)
 {
+	//dprintf(1, "malloc with size %zu, function called : %s\n", size, __func__);
 	if (size == 0)
 	{
 		return (NULL);
 	}
 	else if (0 < size && size <= TINY)
 	{
+		//dprintf(1, "type 1\n");
 		return (t_malloc(size));
 	}
 	else if (TINY < size && size <= SMALL)
 	{
+		//dprintf(1, "type 2\n");
 		return (s_malloc(size));
 	}
 	else
 	{
+		//dprintf(1, "type 3\n");
 		return (l_malloc(size));
 	}
 }
@@ -36,6 +40,7 @@ t_block	*find_equality(void *ptr, t_block *head)
 {
 	t_block	*stop;
 
+	//dprintf(1, "function called : %s\n", __func__);
 	if (head == NULL || ptr == NULL)
 		return (NULL);
 	stop = head->prev;
@@ -127,4 +132,56 @@ void	*realloc(void *ptr, size_t size)
 		free(ptr);
 		return (memory);
 	}
+}
+
+unsigned long long	print_memory(t_block *head, int type)
+{
+	t_block	*node;
+	unsigned long long	total;
+
+	if (type == TINY)
+		dprintf(1, "TINY : %p\n", g_mem.tiny);
+	else if (type == SMALL)
+		dprintf(1, "SMALL : %p\n", g_mem.small);
+	else if (type == LARGE)
+		dprintf(1, "LARGE : %p\n", g_mem.large);
+	node = head;
+	total = 0;
+	head = head->prev;
+	while (node != head)
+	{
+		dprintf(1, "%p - %p : %llu octets\n", node + BLOCKSIZE, node->next, node->next - (node + BLOCKSIZE));
+		total += node->next - (node + BLOCKSIZE);
+		node = node->next;
+	}
+	return total;
+}
+
+void	first_in_head(t_block **list)
+{
+	t_block	*node;
+	t_block	*head;
+
+	head = *list;
+	node = (*list)->next;
+	while (node != *list)
+	{
+		if (node < head)
+			head = node;
+		node = node->next;
+	}
+	*list = head;
+}
+
+void	show_alloc_mem()
+{
+	unsigned long long	total;
+
+	first_in_head(&(g_mem.tiny));
+	first_in_head(&(g_mem.small));
+	first_in_head(&(g_mem.large));
+
+	total = print_memory(g_mem.tiny, TINY) + print_memory(g_mem.small, SMALL) + print_memory(g_mem.large, LARGE);
+	dprintf(1, "Total : %llu octets\n", total);
+
 }

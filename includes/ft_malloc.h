@@ -6,7 +6,7 @@
 /*   By: thifranc <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/29 13:48:23 by thifranc          #+#    #+#             */
-/*   Updated: 2017/09/06 13:28:51 by thifranc         ###   ########.fr       */
+/*   Updated: 2017/09/06 15:40:04 by thifranc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,8 +19,9 @@
 #include <string.h>
 
 #define BLOCKSIZE sizeof(t_block) 
-#define TINY 1024 //relatif au systeme normalement
-#define SMALL 2000
+#define TINY 2048//relatif au systeme normalement
+#define SMALL 4096
+#define LARGE 10000
 
 
 typedef enum		e_bool
