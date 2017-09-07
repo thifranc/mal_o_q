@@ -6,13 +6,13 @@
 /*   By: thifranc <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/29 17:33:26 by thifranc          #+#    #+#             */
-/*   Updated: 2017/09/06 15:14:19 by thifranc         ###   ########.fr       */
+/*   Updated: 2017/09/07 16:37:44 by thifranc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/ft_malloc.h"
 
-struct s_mem g_mem = {NULL, NULL, NULL};
+struct s_mem g_mem = {NULL, NULL, NULL, NULL, NULL, NULL};
 
 t_bool	size_available(size_t size, t_block **src)
 {
@@ -63,6 +63,7 @@ void	*l_malloc(size_t size)
 		g_mem.large->free = FALSE;
 		g_mem.large->next = g_mem.large;
 		g_mem.large->prev = g_mem.large;
+		g_mem.l_head = g_mem.large;
 	}
 	if (size_available(size, &(g_mem.large)))
 	{
@@ -199,10 +200,12 @@ void	init_lst(int type)
 	if (type == TINY)
 	{
 		g_mem.tiny = new_memory;
+		g_mem.t_head = g_mem.tiny;
 	}
 	else if (type == SMALL)
 	{
 		g_mem.small = new_memory;
+		g_mem.s_head = g_mem.small;
 	}
 }
 

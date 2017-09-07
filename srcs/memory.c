@@ -6,7 +6,7 @@
 /*   By: thifranc <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/04 09:50:01 by thifranc          #+#    #+#             */
-/*   Updated: 2017/09/06 17:09:11 by thifranc         ###   ########.fr       */
+/*   Updated: 2017/09/07 17:17:21 by thifranc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -160,38 +160,47 @@ unsigned long long	print_memory(t_block *head, int type)
 	return total;
 }
 
-void	first_in_head(t_block **list)
-{
-	t_block	*node;
-	t_block	*head;
-
-	if (!*list)
-		return ;
-	head = *list;
-	dprintf(1, "lol1\n");
-	node = (*list)->next;
-	while (node != *list)
-	{
-		if (node < head)
-			head = node;
-		node = node->next;
-	}
-	*list = head;
-}
-
 void	show_alloc_mem()
 {
 	unsigned long long	total;
 
-	dprintf(1, "lol1\n");
-	first_in_head(&(g_mem.tiny));
-	dprintf(1, "lol2\n");
-	first_in_head(&(g_mem.small));
-	dprintf(1, "lol3\n");
-	first_in_head(&(g_mem.large));
-	dprintf(1, "lol4\n");
 
-	total = print_memory(g_mem.tiny, TINY) + print_memory(g_mem.small, SMALL) + print_memory(g_mem.large, LARGE);
+
+	sort_list(&(g_mem.l_head));
+	sort_list(&(g_mem.s_head));
+	sort_list(&(g_mem.t_head));
+
+	total = print_memory(g_mem.t_head, TINY) + print_memory(g_mem.s_head, SMALL) + print_memory(g_mem.l_head, LARGE);
 	dprintf(1, "Total : %llu octets\n", total);
 
+}
+
+void	sort_list(t_block **head)
+{
+	int		swapped;
+	t_block	*node;
+	t_block	*swapper;
+
+	while (1)
+	{
+		swapped = FALSE;
+		node = *head;
+		while (node != (*head)->prev)
+		{
+			if (node > node->next)
+			{
+				swapped = TRUE;
+				swapper = node->next;
+				node->next = swapper->next;
+				node->next->prev = node;
+				node->prev->next = swapper;
+				swapper->prev = node->prev;
+				node->prev = swapper;
+				swapper->next = node;
+			}
+			node = node->next;
+		}
+		if (swapped == FALSE)
+			break ;
+	}
 }
