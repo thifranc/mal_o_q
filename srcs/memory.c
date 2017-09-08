@@ -6,7 +6,7 @@
 /*   By: thifranc <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/04 09:50:01 by thifranc          #+#    #+#             */
-/*   Updated: 2017/09/08 14:51:41 by thifranc         ###   ########.fr       */
+/*   Updated: 2017/09/08 15:07:47 by thifranc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,73 +55,6 @@ t_block	*find_equality(void *ptr, t_block *head)
 		return (NULL);
 }
 
-void	real_free(t_block *node)
-{
-	node->free = TRUE;
-}
-
-void	free(void *ptr)
-{
-	t_block	*node;
-
-	if (ptr == NULL)
-		return ;
-	else if ((node = find_equality(ptr, g_mem.tiny)) != NULL)
-	{
-		real_free(node);
-	}
-	else if ((node = find_equality(ptr, g_mem.small)) != NULL)
-	{
-		real_free(node);
-	}
-	else if ((node = find_equality(ptr, g_mem.large)))
-	{
-		node->free = TRUE;
-	}
-	else
-		return ;
-}
-
-void	*ft_memcpy(void *dst, const void *src, size_t n)
-{
-	size_t		i;
-	char		*src2;
-	char		*dst2;
-
-	i = 0;
-	src2 = (char*)src;
-	dst2 = (char*)dst;
-	while (i < n)
-	{
-		dst2[i] = src2[i];
-		i++;
-	}
-	return ((void*)dst);
-}
-
-void	*realloc(void *ptr, size_t size)
-{
-	void	*memory;
-
-	if (ptr == NULL)
-	{
-		return (malloc(size));
-	}
-	else
-	{
-		if (!find_equality(ptr, g_mem.tiny)
-				&& !find_equality(ptr, g_mem.small)
-				&& !find_equality(ptr, g_mem.large))
-			return (NULL);
-		if (size == 0)
-			size = 1;
-		memory = malloc(size);
-		ft_memcpy(memory, ptr, size);
-		free(ptr);
-		return (memory);
-	}
-}
-
 unsigned long long	print_memory(t_block *head, int type)
 {
 	t_block	*node;
@@ -154,14 +87,6 @@ unsigned long long	print_memory(t_block *head, int type)
 		node = node->next;
 	}
 	return total;
-}
-
-int		ft_power(int nb, int power)
-{
-	if (power == 0)
-		return (1);
-	else
-		return (nb * ft_power(nb, power - 1));
 }
 
 void	show_alloc_mem()

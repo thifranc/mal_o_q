@@ -6,7 +6,7 @@
 /*   By: thifranc <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/29 13:48:23 by thifranc          #+#    #+#             */
-/*   Updated: 2017/09/08 14:45:38 by thifranc         ###   ########.fr       */
+/*   Updated: 2017/09/08 15:10:24 by thifranc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,12 +58,14 @@ void	free(void *ptr);
 void	*t_malloc(size_t size);
 void	*malloc(size_t size);
 t_bool	get_new_area(int type);
-t_bool	init_lst(int type);
+void	init_lst(int type);
 t_bool	size_available(size_t size, t_block **src);
 void	*carve_block(t_block *cur, size_t size);
 void	*realloc(void *ptr, size_t size);
 unsigned long long	print_memory(t_block *head, int type);
 long	area_to_munmap(t_block *list);
 t_bool	check_if_munmap();
+t_block	*find_equality(void *ptr, t_block *head);
+void	*ft_memcpy(void *dst, const void *src, size_t n);
 
 #endif

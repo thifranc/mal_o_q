@@ -6,7 +6,7 @@
 /*   By: thifranc <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/29 17:33:26 by thifranc          #+#    #+#             */
-/*   Updated: 2017/09/08 14:50:10 by thifranc         ###   ########.fr       */
+/*   Updated: 2017/09/08 15:03:11 by thifranc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,45 +39,6 @@ t_bool	size_available(size_t size, t_block **src)
 	return (FALSE);
 }
 
-long	area_to_munmap(t_block *list)
-{
-	t_block	*runner;
-	long ret;
-
-	runner = list->prev;
-	ret = 0;
-	while (list != runner)
-	{
-		ret += runner->size;
-		runner = runner->next;
-	}
-	return ret;
-}
-
-t_bool	check_if_munmap()
-{
-	long	len;
-	t_bool	ret;
-
-	ret = FALSE;
-	if ((len = area_to_munmap(g_mem.tiny)) != 0)
-	{
-		munmap(g_mem.tiny, len);
-		ret = TRUE;
-	}
-	if ((len = area_to_munmap(g_mem.small)) != 0)
-	{
-		munmap(g_mem.small, len);
-		ret = TRUE;
-	}
-	if ((len = area_to_munmap(g_mem.large)) != 0)
-	{
-		munmap(g_mem.large, len);
-		ret = TRUE;
-	}
-	return ret;
-}
-
 void	*l_malloc(size_t size)
 {
 	t_block *new_memory;
@@ -87,13 +48,8 @@ void	*l_malloc(size_t size)
 	if (!g_mem.large)
 	{
 		if (!(g_mem.large = (t_block *)mmap(NULL,
-						area, PROT_READ | PROT_WRITE, MAP_ANON | MAP_PRIVATE, -1, 0)))
-		{
-			if (!(check_if_munmap()))
-				return (NULL);
-			else
-				return (l_malloc(size));
-		}
+			area, PROT_READ | PROT_WRITE, MAP_ANON | MAP_PRIVATE, -1, 0)))
+			return (NULL);
 		g_mem.large->size = area - BLOCKSIZE;
 		g_mem.large->free = FALSE;
 		g_mem.large->next = g_mem.large;
@@ -106,13 +62,8 @@ void	*l_malloc(size_t size)
 	else
 	{
 		if (!(new_memory = (t_block *)mmap(NULL,
-						area, PROT_READ | PROT_WRITE, MAP_ANON | MAP_PRIVATE, -1, 0)))
+			area, PROT_READ | PROT_WRITE, MAP_ANON | MAP_PRIVATE, -1, 0)))
 		{
-
-			if (!(check_if_munmap()))
-				return (NULL);
-			else
-				return (l_malloc(size));
 			return (NULL);
 		}
 		new_memory->size = area - BLOCKSIZE;
@@ -132,9 +83,7 @@ void	*t_malloc(size_t size)
 
 	if (!(g_mem.tiny))
 	{
-		if (!(init_lst(SMALL)))
-			if (!(check_if_munmap()))
-				return (NULL);
+		init_lst(TINY);
 	}
 	rest = size_available(size, &(g_mem.tiny));
 	if (rest == TRUE)
@@ -145,10 +94,7 @@ void	*t_malloc(size_t size)
 	}
 	if (!get_new_area(TINY))
 	{
-		if (!(check_if_munmap()))
-			return (NULL);
-		else
-			return (l_malloc(size));
+		return (NULL);
 	}
 	else
 	{
@@ -165,9 +111,7 @@ void	*s_malloc(size_t size)
 
 	if (!(g_mem.small))
 	{
-		if (!(init_lst(SMALL)))
-			if (!(check_if_munmap()))
-				return (NULL);
+		init_lst(SMALL);
 	}
 	rest = size_available(size, &(g_mem.small));
 	if (rest == TRUE)
@@ -178,10 +122,7 @@ void	*s_malloc(size_t size)
 	}
 	if (!get_new_area(SMALL))
 	{
-		if (!(check_if_munmap()))
-			return (NULL);
-		else
-			return (s_malloc(size));
+		return (NULL);
 	}
 	else
 	{
@@ -198,7 +139,7 @@ t_bool	get_new_area(int type)
 
 	area = ((100 * (TINY + BLOCKSIZE) / getpagesize()) + 1) * getpagesize();
 	if (!(new_memory = (t_block *)mmap(NULL,
-					area, PROT_READ | PROT_WRITE, MAP_ANON | MAP_PRIVATE, -1, 0)))
+		area, PROT_READ | PROT_WRITE, MAP_ANON | MAP_PRIVATE, -1, 0)))
 		return (FALSE);
 	new_memory->size = area - BLOCKSIZE;
 	new_memory->free = TRUE;
@@ -219,15 +160,54 @@ t_bool	get_new_area(int type)
 	return (TRUE);
 }
 
-t_bool	init_lst(int type)
+size_t	space_for_munmap(t_block *list)
+{
+	t_block	*runner;
+	size_t	ret;
+
+	runner = list->prev;
+	ret = 0;
+	while (runner != list)
+	{
+		ret += runner->size;
+		runner = runner->next;
+	}
+	return ret;
+}
+
+t_bool	check_munmap()
+{
+	t_bool	ret;
+	size_t	len;
+
+	ret = FALSE;
+	if ((len = space_for_munmap(g_mem.tiny)))
+	{
+		munmap(g_mem.tiny, len);
+		ret = TRUE;
+	}
+	if ((len = space_for_munmap(g_mem.small)))
+	{
+		munmap(g_mem.small, len);
+		ret = TRUE;
+	}
+	if ((len = space_for_munmap(g_mem.large)))
+	{
+		munmap(g_mem.large, len);
+		ret = TRUE;
+	}
+	return ret;
+}
+
+void	init_lst(int type)
 {
 	int		area;
 	t_block	*new_memory;
 
 	area = ((100 * (type + BLOCKSIZE) / getpagesize()) + 1) * getpagesize();
 	if (!(new_memory = mmap(NULL,
-					area, PROT_READ | PROT_WRITE, MAP_ANON | MAP_PRIVATE, -1, 0)))
-		return (FALSE);
+		area, PROT_READ | PROT_WRITE, MAP_ANON | MAP_PRIVATE, -1, 0)))
+		return ;
 	new_memory->size = area - BLOCKSIZE;
 	new_memory->free = TRUE;
 	new_memory->next = new_memory;
@@ -240,7 +220,6 @@ t_bool	init_lst(int type)
 	{
 		g_mem.small = new_memory;
 	}
-	return (TRUE);
 }
 
 void	*carve_block(t_block *cur, size_t size)
