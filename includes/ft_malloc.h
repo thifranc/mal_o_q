@@ -6,7 +6,7 @@
 /*   By: thifranc <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/29 13:48:23 by thifranc          #+#    #+#             */
-/*   Updated: 2017/09/08 08:52:55 by thifranc         ###   ########.fr       */
+/*   Updated: 2017/09/08 10:29:26 by thifranc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,10 @@ struct	s_mem {
 
 extern struct s_mem g_mem;
 
+size_t	ft_strlen(const char *c);
+void	ft_putstr(char const *s);
+void	ft_putchar(char c);
+void	ft_putnb_base(long long n, char *base);
 t_block	*sort_list(t_block *head);
 void	show_alloc_mem();
 void	*s_malloc(size_t size);
