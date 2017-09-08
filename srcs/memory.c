@@ -6,7 +6,7 @@
 /*   By: thifranc <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/04 09:50:01 by thifranc          #+#    #+#             */
-/*   Updated: 2017/09/08 13:39:22 by thifranc         ###   ########.fr       */
+/*   Updated: 2017/09/08 14:06:59 by thifranc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,22 +55,9 @@ t_block	*find_equality(void *ptr, t_block *head)
 		return (NULL);
 }
 
-void	real_free(t_block *node, t_block **list)
+void	real_free(t_block *node)
 {
-	while (*list != node)
-		*list = (*list)->next;
-		(*list)->free = TRUE;
-	   if ((*list)->prev->free == TRUE)
-	   {
-	   (*list)->prev->next = (*list)->next;
-	   (*list)->next->prev = (*list)->prev;
-	   //(*list)->prev->size = (*list)->prev->size + (*list)->size + BLOCKSIZE;
-	   *list = (*list)->next;
-	   } else if (node->next->free == TRUE) {
-	   real_free(node->next, &(*list));
-	   }
-	/*
-	   */
+	node->free = TRUE;
 }
 
 void	free(void *ptr)
@@ -81,11 +68,11 @@ void	free(void *ptr)
 		return ;
 	else if ((node = find_equality(ptr, g_mem.tiny)) != NULL)
 	{
-		real_free(node, &g_mem.tiny);
+		real_free(node);
 	}
 	else if ((node = find_equality(ptr, g_mem.small)) != NULL)
 	{
-		real_free(node, &g_mem.small);
+		real_free(node);
 	}
 	else if ((node = find_equality(ptr, g_mem.large)))
 	{
@@ -176,9 +163,9 @@ void	show_alloc_mem()
 	t_block				*small;
 	t_block				*large;
 
-	tiny = sort_list((g_mem.t_head));
-	small = sort_list((g_mem.s_head));
-	large = sort_list((g_mem.l_head));
+	tiny = sort_list((g_mem.tiny));
+	small = sort_list((g_mem.small));
+	large = sort_list((g_mem.large));
 
 	total = print_memory(tiny, TINY) + print_memory(small, SMALL) + print_memory(large, LARGE);
 	ft_putstr("Total : ");
