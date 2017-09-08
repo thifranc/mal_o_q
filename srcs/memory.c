@@ -6,7 +6,7 @@
 /*   By: thifranc <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/04 09:50:01 by thifranc          #+#    #+#             */
-/*   Updated: 2017/09/08 14:06:59 by thifranc         ###   ########.fr       */
+/*   Updated: 2017/09/08 14:51:41 by thifranc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -154,6 +154,14 @@ unsigned long long	print_memory(t_block *head, int type)
 		node = node->next;
 	}
 	return total;
+}
+
+int		ft_power(int nb, int power)
+{
+	if (power == 0)
+		return (1);
+	else
+		return (nb * ft_power(nb, power - 1));
 }
 
 void	show_alloc_mem()
