@@ -6,7 +6,7 @@
 /*   By: thifranc <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/04 09:50:01 by thifranc          #+#    #+#             */
-/*   Updated: 2017/09/08 10:34:45 by thifranc         ###   ########.fr       */
+/*   Updated: 2017/09/08 13:39:22 by thifranc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,16 +59,17 @@ void	real_free(t_block *node, t_block **list)
 {
 	while (*list != node)
 		*list = (*list)->next;
-	(*list)->free = TRUE;
-	/*
+		(*list)->free = TRUE;
 	   if ((*list)->prev->free == TRUE)
 	   {
-	   (*list)->prev->next = node->next;
-	   (*list)->next->prev = node->prev;
-	   (*list)->prev->size += node->size + BLOCKSIZE;
+	   (*list)->prev->next = (*list)->next;
+	   (*list)->next->prev = (*list)->prev;
+	   //(*list)->prev->size = (*list)->prev->size + (*list)->size + BLOCKSIZE;
+	   *list = (*list)->next;
 	   } else if (node->next->free == TRUE) {
 	   real_free(node->next, &(*list));
 	   }
+	/*
 	   */
 }
 
@@ -139,6 +140,8 @@ unsigned long long	print_memory(t_block *head, int type)
 	t_block	*node;
 	unsigned long long	total;
 
+	if (!head)
+		return (0);
 	if (type == TINY)
 		ft_putstr("TINY : ");
 	else if (type == SMALL)
@@ -147,16 +150,16 @@ unsigned long long	print_memory(t_block *head, int type)
 		ft_putstr("LARGE : ");
 	if (!head)
 		return 0;
-	ft_putnb_base((long long)head, "0123456789abcdef");
+	ft_putnb_base((long long)head, "0123456789ABCDEF");
 	ft_putstr("\n");
 	node = head;
 	total = 0;
 	head = head->prev;
 	while (node != head)
 	{
-		ft_putnb_base((long long)node, "0123456789abcdef");
+		ft_putnb_base((long long)node, "0123456789ABCDEF");
 		ft_putstr(" - ");
-		ft_putnb_base((long long)node->next - BLOCKSIZE, "0123456789abcdef");
+		ft_putnb_base((long long)node->next - BLOCKSIZE, "0123456789ABCDEF");
 		ft_putstr(" : ");
 		ft_putnb_base((long long)node->size, "0123456789");
 		ft_putstr(" octets\n");
@@ -208,6 +211,8 @@ t_block	*sort_list(t_block *head)
 	t_block	*node;
 	t_block	*swapper;
 
+	if (!head)
+		return (NULL);
 	while (1)
 	{
 		swapped = FALSE;
