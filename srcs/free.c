@@ -6,7 +6,7 @@
 /*   By: thifranc <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/08 15:06:12 by thifranc          #+#    #+#             */
-/*   Updated: 2017/09/08 15:07:49 by thifranc         ###   ########.fr       */
+/*   Updated: 2017/09/10 17:56:40 by thifranc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,4 +61,3 @@ void	*realloc(void *ptr, size_t size)
 		return (memory);
 	}
 }
-

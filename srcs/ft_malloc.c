@@ -6,7 +6,7 @@
 /*   By: thifranc <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/29 17:33:26 by thifranc          #+#    #+#             */
-/*   Updated: 2017/09/08 15:03:11 by thifranc         ###   ########.fr       */
+/*   Updated: 2017/09/11 09:05:31 by thifranc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,29 +14,35 @@
 
 struct s_mem g_mem = {NULL, NULL, NULL};
 
-t_bool	size_available(size_t size, t_block **src)
+void	*malloc(size_t size)
 {
-	t_block	*head;
+	if (size == 0)
+	{
+		return (NULL);
+	}
+	else if (0 < size && size <= TINY)
+	{
+		return (t_malloc(size));
+	}
+	else if (TINY < size && size <= SMALL)
+	{
+		return (s_malloc(size));
+	}
+	else
+	{
+		return (l_malloc(size));
+	}
+}
 
-	head = *src;
-	*src = (*src)->next;
-	if (head == *src && (*src)->free && (*src)->size >= size)
-	{
-		return (TRUE);
-	}
-	while (*src != head)
-	{
-		if ((*src)->free && size <= (*src)->size)
-		{
-			return (TRUE);
-		}
-		*src = (*src)->next;
-	}
-	if ((*src)->free && size <= (*src)->size)
-	{
-		return (TRUE);
-	}
-	return (FALSE);
+void	dummy_init(t_block **load, int area, char flag)
+{
+	(*load)->size = area - BLOCKSIZE;
+	(*load)->free = FALSE;
+	(*load)->prev = g_mem.large;
+	if (flag == 1)
+		(*load)->next = g_mem.large;
+	else if (flag == 2)
+		(*load)->next = g_mem.large->next;
 }
 
 void	*l_malloc(size_t size)
@@ -50,26 +56,16 @@ void	*l_malloc(size_t size)
 		if (!(g_mem.large = (t_block *)mmap(NULL,
 			area, PROT_READ | PROT_WRITE, MAP_ANON | MAP_PRIVATE, -1, 0)))
 			return (NULL);
-		g_mem.large->size = area - BLOCKSIZE;
-		g_mem.large->free = FALSE;
-		g_mem.large->next = g_mem.large;
-		g_mem.large->prev = g_mem.large;
+		dummy_init(&(g_mem.large), area, 1);
 	}
 	if (size_available(size, &(g_mem.large)))
-	{
 		return (g_mem.large + BLOCKSIZE);
-	}
 	else
 	{
 		if (!(new_memory = (t_block *)mmap(NULL,
 			area, PROT_READ | PROT_WRITE, MAP_ANON | MAP_PRIVATE, -1, 0)))
-		{
 			return (NULL);
-		}
-		new_memory->size = area - BLOCKSIZE;
-		new_memory->free = FALSE;
-		new_memory->next = g_mem.large->next;
-		new_memory->prev = g_mem.large;
+		dummy_init(&(new_memory), area, 2);
 		g_mem.large->next->prev = new_memory;
 		g_mem.large->next = new_memory;
 		return ((void*)new_memory + BLOCKSIZE);
@@ -132,73 +128,6 @@ void	*s_malloc(size_t size)
 	}
 }
 
-t_bool	get_new_area(int type)
-{
-	t_block	*new_memory;
-	int		area;
-
-	area = ((100 * (TINY + BLOCKSIZE) / getpagesize()) + 1) * getpagesize();
-	if (!(new_memory = (t_block *)mmap(NULL,
-		area, PROT_READ | PROT_WRITE, MAP_ANON | MAP_PRIVATE, -1, 0)))
-		return (FALSE);
-	new_memory->size = area - BLOCKSIZE;
-	new_memory->free = TRUE;
-	if (type == TINY)
-	{
-		new_memory->next = g_mem.tiny->next;
-		new_memory->prev = g_mem.tiny;
-		g_mem.tiny->next->prev = new_memory;
-		g_mem.tiny->next = new_memory;
-	}
-	else if (type == SMALL)
-	{
-		new_memory->next = g_mem.small->next;
-		new_memory->prev = g_mem.small;
-		g_mem.small->next->prev = new_memory;
-		g_mem.small->next = new_memory;
-	}
-	return (TRUE);
-}
-
-size_t	space_for_munmap(t_block *list)
-{
-	t_block	*runner;
-	size_t	ret;
-
-	runner = list->prev;
-	ret = 0;
-	while (runner != list)
-	{
-		ret += runner->size;
-		runner = runner->next;
-	}
-	return ret;
-}
-
-t_bool	check_munmap()
-{
-	t_bool	ret;
-	size_t	len;
-
-	ret = FALSE;
-	if ((len = space_for_munmap(g_mem.tiny)))
-	{
-		munmap(g_mem.tiny, len);
-		ret = TRUE;
-	}
-	if ((len = space_for_munmap(g_mem.small)))
-	{
-		munmap(g_mem.small, len);
-		ret = TRUE;
-	}
-	if ((len = space_for_munmap(g_mem.large)))
-	{
-		munmap(g_mem.large, len);
-		ret = TRUE;
-	}
-	return ret;
-}
-
 void	init_lst(int type)
 {
 	int		area;
@@ -220,23 +149,4 @@ void	init_lst(int type)
 	{
 		g_mem.small = new_memory;
 	}
-}
-
-void	*carve_block(t_block *cur, size_t size)
-{
-	t_block	*new;
-
-	if (cur->size >= size + BLOCKSIZE)
-	{
-		new = (void*)cur + BLOCKSIZE + size;
-		new->size = cur->size - (size + BLOCKSIZE);
-		new->free = TRUE;
-		new->prev = cur;
-		new->next = cur->next;
-		cur->next->prev = new;
-		cur->next = new;
-	}
-	cur->size = size;
-	cur->free = FALSE;
-	return ((void *)cur + BLOCKSIZE);
 }

@@ -6,7 +6,7 @@
 /*   By: thifranc <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/07 17:47:23 by thifranc          #+#    #+#             */
-/*   Updated: 2017/09/08 15:07:49 by thifranc         ###   ########.fr       */
+/*   Updated: 2017/09/10 17:56:44 by thifranc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,4 +64,3 @@ void	*ft_memcpy(void *dst, const void *src, size_t n)
 	}
 	return ((void*)dst);
 }
-

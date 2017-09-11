@@ -6,31 +6,11 @@
 /*   By: thifranc <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/04 09:50:01 by thifranc          #+#    #+#             */
-/*   Updated: 2017/09/08 15:07:47 by thifranc         ###   ########.fr       */
+/*   Updated: 2017/09/11 08:36:39 by thifranc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/ft_malloc.h"
-
-void	*malloc(size_t size)
-{
-	if (size == 0)
-	{
-		return (NULL);
-	}
-	else if (0 < size && size <= TINY)
-	{
-		return (t_malloc(size));
-	}
-	else if (TINY < size && size <= SMALL)
-	{
-		return (s_malloc(size));
-	}
-	else
-	{
-		return (l_malloc(size));
-	}
-}
 
 t_block	*find_equality(void *ptr, t_block *head)
 {
@@ -55,13 +35,21 @@ t_block	*find_equality(void *ptr, t_block *head)
 		return (NULL);
 }
 
+void				print_line(t_block *node)
+{
+	ft_putnb_base((long long)node, "0123456789ABCDEF");
+	ft_putstr(" - ");
+	ft_putnb_base((long long)node->next - BLOCKSIZE, "0123456789ABCDEF");
+	ft_putstr(" : ");
+	ft_putnb_base((long long)node->size, "0123456789");
+	ft_putstr(" octets\n");
+}
+
 unsigned long long	print_memory(t_block *head, int type)
 {
-	t_block	*node;
+	t_block				*node;
 	unsigned long long	total;
 
-	if (!head)
-		return (0);
 	if (type == TINY)
 		ft_putstr("TINY : ");
 	else if (type == SMALL)
@@ -69,7 +57,7 @@ unsigned long long	print_memory(t_block *head, int type)
 	else if (type == LARGE)
 		ft_putstr("LARGE : ");
 	if (!head)
-		return 0;
+		return (0);
 	ft_putnb_base((long long)head, "0123456789ABCDEF");
 	ft_putstr("\n");
 	node = head;
@@ -77,19 +65,14 @@ unsigned long long	print_memory(t_block *head, int type)
 	head = head->prev;
 	while (node != head)
 	{
-		ft_putnb_base((long long)node, "0123456789ABCDEF");
-		ft_putstr(" - ");
-		ft_putnb_base((long long)node->next - BLOCKSIZE, "0123456789ABCDEF");
-		ft_putstr(" : ");
-		ft_putnb_base((long long)node->size, "0123456789");
-		ft_putstr(" octets\n");
+		print_line(node);
 		total += node->size;
 		node = node->next;
 	}
-	return total;
+	return (total);
 }
 
-void	show_alloc_mem()
+void	show_alloc_mem(void)
 {
 	unsigned long long	total;
 	t_block				*tiny;
@@ -99,12 +82,12 @@ void	show_alloc_mem()
 	tiny = sort_list((g_mem.tiny));
 	small = sort_list((g_mem.small));
 	large = sort_list((g_mem.large));
-
-	total = print_memory(tiny, TINY) + print_memory(small, SMALL) + print_memory(large, LARGE);
+	total = print_memory(tiny, TINY)
+		+ print_memory(small, SMALL)
+		+ print_memory(large, LARGE);
 	ft_putstr("Total : ");
 	ft_putnb_base((long long)total, "0123456789");
 	ft_putstr(" octets\n");
-
 }
 
 t_block	*get_min(t_block *list)
@@ -122,7 +105,7 @@ t_block	*get_min(t_block *list)
 	}
 	if (runner < rep)
 		rep = runner;
-	return rep;
+	return (rep);
 }
 
 t_block	*sort_list(t_block *head)
@@ -155,5 +138,5 @@ t_block	*sort_list(t_block *head)
 		if (swapped == FALSE)
 			break ;
 	}
-	return get_min(head);
+	return (get_min(head));
 }
