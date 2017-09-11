@@ -6,7 +6,7 @@
 #    By: thifranc <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2016/02/04 19:24:34 by thifranc          #+#    #+#              #
-#    Updated: 2017/09/11 08:49:26 by thifranc         ###   ########.fr        #
+#    Updated: 2017/09/11 10:05:56 by thifranc         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -18,7 +18,7 @@ NAME = libft_malloc_$(HOSTTYPE).so
 
 INC = includes/ft_malloc.h
 
-SRCS = srcs/ft_malloc srcs/memory srcs/ptrf srcs/free srcs/size
+SRCS = srcs/ft_malloc srcs/memory srcs/ptrf srcs/free srcs/size srcs/main srcs/print
 
 SYMLINK	= libft_malloc.so
 
