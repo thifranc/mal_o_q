@@ -6,7 +6,7 @@
 /*   By: thifranc <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/29 13:48:23 by thifranc          #+#    #+#             */
-/*   Updated: 2017/09/11 10:13:40 by thifranc         ###   ########.fr       */
+/*   Updated: 2017/09/13 16:17:13 by thifranc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 # include <unistd.h>
 # include <stdio.h>
 # include <string.h>
+# include <pthread.h>
 
 # define BLOCKSIZE	sizeof(t_block)
 # define POWER	1048576

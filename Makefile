@@ -6,7 +6,7 @@
 #    By: thifranc <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2016/02/04 19:24:34 by thifranc          #+#    #+#              #
-#    Updated: 2017/09/11 10:05:56 by thifranc         ###   ########.fr        #
+#    Updated: 2017/09/11 10:26:32 by thifranc         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -30,8 +30,7 @@ FLAGS = -Wall -Werror -Wextra -shared
 all: $(NAME)
 
 $(NAME):
-	make -C libft/
-	gcc $(FLAGS) $(SRCS) libft/libft.a -o $(NAME)
+	gcc $(FLAGS) $(SRCS) -o $(NAME)
 	ln -s $(NAME) $(SYMLINK)
 
 clean:
@@ -40,7 +39,6 @@ clean:
 
 fclean: clean
 	@$(RM) $(NAME) $(SYMLINK)
-	@make clean -C libft/
 	@echo "erasing $(NAME)"
 
 re: fclean all
